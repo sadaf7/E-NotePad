@@ -5,12 +5,24 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../../actions/userAction';
 
-const Header = () => {
+const Header = ({setSearch}) => {
 
 
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const userLogin = useSelector((state)=>state.userLogin)
+
+  const { userInfo } = userLogin
+
+  const logoutHandler = () =>{
+    dispatch(logout())
+    navigate('/')
+  }
 
   return (
     <Navbar bg='primary' variant='dark' expand="lg" className="bg-body-tertiary">
@@ -20,7 +32,7 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
-          <Nav
+          {userInfo ?( <Nav
             className="me-auto my-2 my-lg-0"
             style={{ maxHeight: '100px' }}
             navbarScroll
@@ -32,25 +44,25 @@ const Header = () => {
               placeholder="Search"
               className="me-2"
               aria-label="Search"
+              onChange={(e)=>setSearch(e.target.value)}
             />
           </Form>
             </Nav>
             <Nav.Link >
               <Link to='/mynotes'>My Notes</Link>
             </Nav.Link>
-            <NavDropdown title="Sadaf Hossain" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">My Profile</NavDropdown.Item>
+            <NavDropdown title={userInfo?.name} id="navbarScrollingDropdown">
+              <NavDropdown.Item href="/profile">My Profile</NavDropdown.Item>
               
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={()=>{
-                localStorage.removeItem('userInfo');
-                navigate('/')
-              }}>
+              <NavDropdown.Item onClick={logoutHandler}>
                 Logout
               </NavDropdown.Item>
             </NavDropdown>
             
-          </Nav>
+          </Nav>):(<Nav>
+            <Nav.Link><Link to="/login">Login</Link></Nav.Link>
+          </Nav>)}
           
         </Navbar.Collapse>
       </Container>

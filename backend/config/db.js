@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const mongoUrl = "mongodb+srv://chatApp_admin:admin404@cluster0.blflx4z.mongodb.net/?retryWrites=true&w=majority"
+require('dotenv').config()
+const mongoUrl = process.env.MONGO_URL;
 
 const connectToMongo = () => {
   try {
